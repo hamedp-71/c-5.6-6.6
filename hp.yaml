@@ -21,19 +21,20 @@ profile:
 dns:
   enable: true
   listen: '0.0.0.0:1053'
-  ipv6: false
+  ipv6: true
   respect-rules: true
   use-system-hosts: false
   nameserver:
-    - 'https://8.8.8.8/dns-query#✅ گلوبال'
+    - 'https://8.8.8.8/dns-query#💚 گلوبال'
   proxy-server-nameserver:
     - '8.8.8.8#DIRECT'
     - '8.8.4.4#DIRECT'
-    - '9.9.9.9#DIRECT'
     - '1.1.1.1#DIRECT'
-    - '2606:4700:4700::1111'
+    - '9.9.9.9#DIRECT'
     - '2001:4860:4860::8888'
     - '2001:4860:4860::8844'
+    - '2606:4700:4700::1111'
+    - '2620:fe::fe'
   nameserver-policy:
     raw.githubusercontent.com: '8.8.8.8#DIRECT'
     time.apple.com: '8.8.8.8#DIRECT'
@@ -63,14 +64,14 @@ dns:
     - '+.local'
 tun:
   enable: true
-  stack: mixed
+  stack: gvisor
   auto-route: true
   strict-route: true
   auto-detect-interface: true
   dns-hijack:
-    - 'any:53'
     - 'tcp://any:53'
-  mtu: 9000
+    - 'udp://any:53'
+  mtu: 1330
 sniffer:
   enable: true
   force-dns-mapping: true
@@ -81,54 +82,51 @@ sniffer:
       ports: [80, 8080, 8880, 2052, 2082, 2086, 2095]
     TLS:
       ports: [443, 8443, 2053, 2083, 2087, 2096]
+    QUIC:
+      ports: [443, 8443]
 proxies:
-  - name: "🇹🇷 hamedp71 - WireGuard"
-    type: wireguard
-    ip: 10.201.3.192/32
-    private-key: "ONdbWgRkq38T1FO89NsXwBn746AcN0zXOl4zfhp2+F8="
-    server: tr01a.kcufwfgnkr.net
-    port: 62931
-    public-key: "6T9PkVHfTvMfDtKANISJqnW1Ulmd5kYyh8IsVkQYemU="
-    pre-shared-key: "x1asVSzzMUP3h4T6n+V/TnQpqJ7cEnwNF3TzizOuOws="
-    allowed-ips: ["0.0.0.0/0", "::/0"]
-    reserved: "AAAA"
-    udp: true
-    mtu: 1380
-    dialer-proxy: ""
-    amnezia-wg-option:
-      jc: 43
-      jmin: 50
-      jmax: 70
-      s1: 110
-      s2: 120
-      h1: 1593635057
-      h2: 430880481
-      h3: 1214405368
-      h4: 1739253821
+  - name: "🇩🇪 ShadowTLS-Proxy"
+    type: ss
+    server: net2026.safavidempire.org
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: "164c1a57-a952-4962-a848-77355f4864fc"
+    plugin: shadow-tls
+    plugin-opts:
+      host: www.google.com
+      password: "164c1a57-a952-4962-a848-77355f4864fc"
+      version: 3
 
-  - name: "🇦🇪 hamedp71 - WireGuard"
-    type: wireguard
-    ip: 10.136.1.207/32
-    private-key: "cFv5swsto2vF1ObPYNoBkAVF2hi1NAL9DJCMBg6+AWc="
-    server: ae01awg.kcufwfgnkr.net
-    port: 60136
-    public-key: "9mn11Gs4ouOhlLdkh1HKfV3zlAZGON9iv4L94dsPmi4="
-    pre-shared-key: "hXQGxBP2Tc0CUNu+bav/4EUw0VTKIuaasDqNKI3TtWE="
-    allowed-ips: ["0.0.0.0/0", "::/0"]
-    reserved: "AAAA"
-    udp: true
-    mtu: 1380
-    dialer-proxy: ""
-    amnezia-wg-option:
-      jc: 43
-      jmin: 50
-      jmax: 70
-      s1: 110
-      s2: 120
-      h1: 1593635057
-      h2: 430880481
-      h3: 1214405368
-      h4: 1739253821
+  - name: "🇩🇪 anytls-443"
+    type: anytls
+    server: 80.240.26.147
+    port: 443
+    password: "qzJvszJHOB"
+    tls: true
+    sni: "suiany.makingirangreatagain.com"
+    servername: "suiany.makingirangreatagain.com"
+
+  - name: "🇸🇪 hamedp71 hy2"
+    type: hysteria2
+    server: drhystuichdfy.samanidempire.org
+    port: 20335
+    password: "80747420-96c4-4a2f-83e6-eea4e46beb09"
+    obfs: "salamander"
+    obfs-password: "U1wBrYQyFm"
+    sni: "drhystuichdfy.samanidempire.org"
+    alpn: ["h3"]
+    skip-cert-verify: true
+
+  - name: "🇳🇱 hamedp71 hy2"
+    type: hysteria2
+    server: net2025.afsharidempire.uk
+    port: 30205
+    password: "8864aa9f-7517-4fd5-aef1-32050eb3095d"
+    obfs: "salamander"
+    obfs-password: "GdQ4bgvT8RFwuWi2"
+    sni: "net2025.afsharidempire.uk"
+    skip-cert-verify: true
+    alpn: ["h3"]
 
   - name: "🇺🇸 US-hysteria"
     type: hysteria
@@ -168,15 +166,6 @@ proxies:
     up: 11 Mbps
     down: 55 Mbps
 
-  - name: "🇩🇪 anytls-443"
-    type: anytls
-    server: 80.240.26.147
-    port: 443
-    password: "qzJvszJHOB"
-    tls: true
-    sni: "suiany.makingirangreatagain.com"
-    servername: "suiany.makingirangreatagain.com"
-
   - name: "🇳🇱 1 hamedp71 - Vless"
     type: vless
     server: braze.com
@@ -186,6 +175,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -201,6 +194,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -216,6 +213,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -231,6 +232,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -246,6 +251,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -261,6 +270,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -276,6 +289,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -291,6 +308,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -306,6 +327,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -321,6 +346,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -336,6 +365,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -351,6 +384,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -366,6 +403,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -381,6 +422,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -396,6 +441,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -411,6 +460,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -426,6 +479,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -441,6 +498,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -456,6 +517,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -471,6 +536,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -486,6 +555,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -501,6 +574,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -516,6 +593,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -531,6 +612,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -546,6 +631,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -561,6 +650,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -576,6 +669,10 @@ proxies:
     network: ws
     servername: revcloud.migacpi.org
     client-fingerprint: chrome
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/cbde4058-6b81-432b-8689-dd7ce10e479c"
       headers:
@@ -594,16 +691,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: hdfynpv2d1.makingirangreatagain.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/Iyq035lnud9R8ruNNrqGxZZ2"
       headers:
         Host: hdfynpv2d1.makingirangreatagain.com
       max-early-data: 2048
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: hdfynpv2d1.makingirangreatagain.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: true
 
   - name: "🇩🇪-AD-CDN-VLESS"
     type: vless
@@ -616,16 +717,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: hdfynpv2c1.farvaharforever.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/Iyq035lnud9R8ruNNrqGxZZ2"
       headers:
         Host: hdfynpv2c1.farvaharforever.com
       max-early-data: 2048
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: hdfynpv2c1.farvaharforever.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: true
 
   - name: "🇩🇪-Telegram-VLESS"
     type: vless
@@ -638,16 +743,272 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: hdfynpv2d1.farvaharforever.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/Iyq035lnud9R8ruNNrqGxZZ2"
       headers:
         Host: hdfynpv2d1.farvaharforever.com
       max-early-data: 2048
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: hdfynpv2d1.farvaharforever.com
-    alpn: ["http/1.1"]
+
+  # UK - I
+  - name: "🇬🇧 hamedp71-1-V"
+    type: vless
+    server: 51.195.202.129
+    port: 443
+    uuid: f3939d9d-6638-4c28-a6d0-950f392766af
+    tls: true
+    network: ws
+    sni: "zula.ir"
     client-fingerprint: chrome
     skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
+
+  # UK - II
+  - name: "🇬🇧 hamedp71-2-V"
+    type: vless
+    server: 188.166.150.199
+    port: 443
+    uuid: 9094dfcd-4bf5-4beb-aab7-2dfd813070f8
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
+
+  # ES - I
+  - name: "🇪🇸 hamedp71-3-V"
+    type: vless
+    server: 139.59.209.171
+    port: 443
+    uuid: 7e6bc431-d7b5-4664-811e-8ac2b08ad25e
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
+
+  # FR - I
+  - name: "🇫🇷 hamedp71-4-V"
+    type: vless
+    server: 139.59.213.120
+    port: 443
+    uuid: 2bb5518a-5937-44b7-87ed-8987dddbdd19
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
+
+  # FR - II
+  - name: "🇫🇷 hamedp71-5-V"
+    type: vless
+    server: 51.178.42.187
+    port: 443
+    uuid: 762397ec-790e-4c42-9a50-94d0c10a2b16
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
+
+  # NL - II
+  - name: "🇳🇱 hamedp71-6-V"
+    type: vless
+    server: 134.209.90.171
+    port: 443
+    uuid: cbef22b9-f7fb-48b5-acc3-7044736ed83a
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: 152.42.139.83
+
+  # CA - I
+  - name: "🇨🇦 hamedp71-7-V"
+    type: vless
+    server: 148.113.207.224
+    port: 443
+    uuid: 24ac612c-b1ac-4066-ae1e-24b158b46457
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
+
+  # DE - I
+  - name: "🇩🇪 hamedp71-8-V"
+    type: vless
+    server: 51.195.101.222
+    port: 443
+    uuid: 63c865a4-aedb-43eb-9177-828519561ea9
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
+
+  # DE - II
+  - name: "🇩🇪 hamedp71-9-V"
+    type: vless
+    server: 68.183.216.44
+    port: 443
+    uuid: 1c03bf51-6773-495f-8a44-4111b1ada9aa
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
+
+  # SG - II
+  - name: "🇸🇬 hamedp71-10-V"
+    type: vless
+    server: 68.183.234.52
+    port: 443
+    uuid: 4056f359-d0b1-4aed-8368-8455bc759ed8
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
+
+  # US - II
+  - name: "🇺🇸 hamedp71-11-V"
+    type: vless
+    server: 143.198.15.103
+    port: 443
+    uuid: 5aebb705-2521-49b6-87f0-17dc1d53e77f
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
+
+  # AU - I
+  - name: "🇦🇺 hamedp71-12-V"
+    type: vless
+    server: 209.38.20.147
+    port: 443
+    uuid: 7f8fa84c-6c40-4787-b0b9-a2b3e7420a26
+    tls: true
+    network: ws
+    sni: "zula.ir"
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    encryption: none
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: zula.ir
 
   - name: "🇸🇪 hamedp71-1-V"
     type: vless
@@ -660,16 +1021,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-2-V"
     type: vless
@@ -682,16 +1047,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-3-V"
     type: vless
@@ -704,16 +1073,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-4-V"
     type: vless
@@ -726,16 +1099,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-5-V"
     type: vless
@@ -748,16 +1125,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-6-V"
     type: vless
@@ -770,16 +1151,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-7-V"
     type: vless
@@ -792,16 +1177,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-8-V"
     type: vless
@@ -814,16 +1203,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-9-V"
     type: vless
@@ -836,16 +1229,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-10-V"
     type: vless
@@ -858,16 +1255,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-11-V"
     type: vless
@@ -880,16 +1281,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-12-V"
     type: vless
@@ -902,16 +1307,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-13-V"
     type: vless
@@ -924,16 +1333,20 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
   - name: "🇸🇪 hamedp71-14-V"
     type: vless
@@ -946,255 +1359,3961 @@ proxies:
     network: ws
     tfo: true
     mptcp: true
+    servername: nkang2replace.airlineshoma.com
+    alpn: ["http/1.1"]
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
     ws-opts:
       path: "/"
       headers:
         Host: nkang2replace.airlineshoma.com
       max-early-data: 2560
       early-data-header-name: Sec-WebSocket-Protocol
-    servername: nkang2replace.airlineshoma.com
-    alpn: ["http/1.1"]
-    client-fingerprint: chrome
-    skip-cert-verify: false
 
-  - name: "🇸🇪 hamedp71 hy2"
-    type: hysteria2
-    server: drhystuichdfy.samanidempire.org
-    port: 20335
-    password: "80747420-96c4-4a2f-83e6-eea4e46beb09"
-    obfs: "salamander"
-    obfs-password: "U1wBrYQyFm"
-    sni: "drhystuichdfy.samanidempire.org"
-    alpn: ["h3"]
-    skip-cert-verify: true
+  - name: "🇹🇷 hamedp71 - Warp"
+    type: wireguard
+    ip: 10.201.2.124/32
+    private-key: "gCQsj/7vZrBCjLuKtNvCrwhEa0CqSXRWRHvoddNin38="
+    server: tr01a.kcufwfgnkr.net
+    port: 62931
+    public-key: "6T9PkVHfTvMfDtKANISJqnW1Ulmd5kYyh8IsVkQYemU="
+    pre-shared-key: "ZMNacbDp5sZhDlKLX0iGhcn+7zRno1gMPmx1ZU3JeWU="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: [251, 19, 4]
+    persistent-keepalive: 15
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    udp: true
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 43
+      jmin: 50
+      jmax: 70
+      s1: 110
+      s2: 120
+      h1: 1593635057
+      h2: 430880481
+      h3: 1214405368
+      h4: 1739253821
 
-  - name: "🇳🇱 hamedp71 hy2"
-    type: hysteria2
-    server: net2025.afsharidempire.uk
-    port: 30205
-    password: "8864aa9f-7517-4fd5-aef1-32050eb3095d"
-    obfs: "salamander"
-    obfs-password: "GdQ4bgvT8RFwuWi2"
-    sni: "net2025.afsharidempire.uk"
-    skip-cert-verify: true
-    alpn: ["h3"]
-
-  # UK - I
-  - name: "🇬🇧 hamedp71-1-V"
-    type: vless
-    server: 51.195.202.129
+  - name: "🇦🇹 Austria-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "89.187.168.67"
+    port: 65142
+    public-key: "KtJIKy9zsCXtKwFMQeGDEZVXtqw+X1+5z10Rh84/N0s="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+ 
+  - name: "🇦🇹 Austria-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: ""
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "89.187.168.67"
     port: 443
-    uuid: f3939d9d-6638-4c28-a6d0-950f392766af
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+    public-key: "KtJIKy9zsCXtKwFMQeGDEZVXtqw+X1+5z10Rh84/N0s="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    dns: ["10.255.255.2"]
+    allowed-ips: ["0.0.0.0/0", "::/0"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
 
-  # UK - II
-  - name: "🇬🇧 hamedp71-2-V"
-    type: vless
-    server: 188.166.150.199
-    port: 443
-    uuid: 9094dfcd-4bf5-4beb-aab7-2dfd813070f8
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+  - name: "🇦🇺 Australia-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "103.1.213.212"
+    port: 65142
+    public-key: "jCi1I5HBTtwCblBbMzOFmOOFNG1GilYOZgst0kyq9gY="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
 
-  # ES - I
-  - name: "🇪🇸 hamedp71-3-V"
-    type: vless
-    server: 139.59.209.171
-    port: 443
-    uuid: 7e6bc431-d7b5-4664-811e-8ac2b08ad25e
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+  - name: "🇦🇺 Australia-WG-2"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "103.77.234.212"
+    port: 65142
+    public-key: "Jhhq6jvPxABM8OmzaM4/zJbcoRBR5OZalIHrZaFuXAU="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
 
-  # FR - I
-  - name: "🇫🇷 hamedp71-4-V"
-    type: vless
-    server: 139.59.213.120
-    port: 443
-    uuid: 2bb5518a-5937-44b7-87ed-8987dddbdd19
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+  - name: "🇦🇺 Australia-WG-3"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "103.77.232.76"
+    port: 65142
+    public-key: "eSxX+L8qX+1MdmwjtlZGIDbDivFdURBh5Rm1KfUpYzc="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
 
-  # FR - II
-  - name: "🇫🇷 hamedp71-5-V"
-    type: vless
-    server: 51.178.42.187
-    port: 443
-    uuid: 762397ec-790e-4c42-9a50-94d0c10a2b16
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
 
-  # NL - II
-  - name: "🇳🇱 hamedp71-6-V"
-    type: vless
-    server: 134.209.90.171
-    port: 443
-    uuid: cbef22b9-f7fb-48b5-acc3-7044736ed83a
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: 152.42.139.83
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+  - name: "🇦🇺 Australia-WG-4"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "103.108.95.228"
+    port: 65142
+    public-key: "iY4MhQqQTP4uT7U4w9DfUEVxi5I3HJvjZcIL2dwmtTw="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
 
-  # CA - I
-  - name: "🇨🇦 hamedp71-7-V"
-    type: vless
-    server: 148.113.207.224
-    port: 443
-    uuid: 24ac612c-b1ac-4066-ae1e-24b158b46457
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+  - name: "🇦🇺 Australia-WG-5"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "116.206.228.180"
+    port: 65142
+    public-key: "r5BDU0T+VGZU6I+zuF3vlGrdORtgNvLhY08gQxrFRCw="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
 
-  # DE - I
-  - name: "🇩🇪 hamedp71-8-V"
-    type: vless
-    server: 51.195.101.222
-    port: 443
-    uuid: 63c865a4-aedb-43eb-9177-828519561ea9
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+  - name: "🇦🇺 Australia-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "116.90.72.244"
+    port: 65142
+    public-key: "tEh6Z8bnFmQU2KWHWYOS7yuDFZgwn3LGOZAdR1hN8kU="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
 
-  # DE - II
-  - name: "🇩🇪 hamedp71-9-V"
-    type: vless
-    server: 68.183.216.44
-    port: 443
-    uuid: 1c03bf51-6773-495f-8a44-4111b1ada9aa
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+  - name: "🇦🇺 Australia-WG-6"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "103.62.50.132"
+    port: 65142
+    public-key: "KvFr7Te5+RaFATDKJzrNXKf44ws8J6E9WbNVsMPvY1I="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
 
-  # SG - II
-  - name: "🇸🇬 hamedp71-10-V"
-    type: vless
-    server: 68.183.234.52
-    port: 443
-    uuid: 4056f359-d0b1-4aed-8368-8455bc759ed8
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+  - name: "🇧🇦 Bosnia-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "185.99.3.25"
+    port: 65142
+    public-key: "6oMHpHHL3pq6Pdr2HoDRYuyjcyQGxfQaSRQR+HPyvgc="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
 
-  # US - II
-  - name: "🇺🇸 hamedp71-11-V"
-    type: vless
-    server: 143.198.15.103
+  - name: "🇨🇦 Canada-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: ""
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "149.57.28.226"
     port: 443
-    uuid: 5aebb705-2521-49b6-87f0-17dc1d53e77f
-    tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
-    client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+    public-key: "vwimooPysZvNdJULeFQVovYfqhsLG5gVdzgoTnfm+iE="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    dns: ["10.255.255.2"]
+    allowed-ips: ["0.0.0.0/0", "::/0"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
 
-  # AU - I
-  - name: "🇦🇺 hamedp71-12-V"
-    type: vless
-    server: 209.38.20.147
+  - name: "🇨🇦 Canada-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "23.191.80.4"
+    port: 65142
+    public-key: "w262TI0UyIg9pFunMiekVURYUuT/z4qXRor2Z7VcOn4="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇨🇦 Canada-WG-2"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "198.8.92.100"
+    port: 65142
+    public-key: "YxWQDjNmU41PJXtoobFek3Y6nhICSLgsqH+QKPO5AQ8="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇨🇦 Canada-WG-3"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "149.57.28.226"
+    port: 65142
+    public-key: "vwimooPysZvNdJULeFQVovYfqhsLG5gVdzgoTnfm+iE="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇨🇦 Canada-WG-4"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "104.244.210.244"
+    port: 65142
+    public-key: "IMHoX/bhNghQVQB0pYKi14pwJhkOcLevpiMa7Khaz2I="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇨🇭 Switzerland-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "89.187.165.99"
+    port: 65142
+    public-key: "G7LkwWk08Ase/Wi9mnOW77brNBC0vTCemvy1IW1nlV4="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇨🇭 Switzerland-WG-2"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "185.156.175.180"
+    port: 65142
+    public-key: "uFOg97vQhHVCUfZy/HwmGH+dR6/9lpeWZ5tV3PysHRE="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇨🇾 Cyprus-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "46.199.75.107"
+    port: 65142
+    public-key: "90fjr1sq0Hgv2l+DgMaaGQ009SDw7VxmzJwaYmclaFs="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇨🇿 Czechia-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "185.246.210.3"
+    port: 65142
+    public-key: "dAaOzl6DBAuFWC85UJUY378WwEHUoNqbE5lJMDfNamo="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇨🇿 Czechia-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: ""
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "185.246.210.3"
     port: 443
-    uuid: 7f8fa84c-6c40-4787-b0b9-a2b3e7420a26
+    public-key: "dAaOzl6DBAuFWC85UJUY378WwEHUoNqbE5lJMDfNamo="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    dns: ["10.255.255.2"]
+    allowed-ips: ["0.0.0.0/0", "::/0"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇫🇷 France-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "45.89.174.36"
+    port: 443
+    public-key: "3si2nD1DKbbkeZkdg3hLMfOYw1gdKbVFtTOj2NOA+nM="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    dns: ["10.255.255.2"]
+    allowed-ips: ["0.0.0.0/0", "::/0"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇫🇷 France-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "45.89.174.36"
+    port: 65142
+    public-key: "3si2nD1DKbbkeZkdg3hLMfOYw1gdKbVFtTOj2NOA+nM="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇫🇷 France-WG-2"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "84.17.42.35"
+    port: 65142
+    public-key: "cmaT8JIehfRf5PWWDkcBRwLWDb3jrIkk/SDbw4JmUAc="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇬🇧 United Kingdom-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "193.36.118.228"
+    port: 65142
+    public-key: "bGn6yuCFQWWF8+ZMGlJ0M6+IJRlkLXn0/UI/mvIyYwQ="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇭🇰 Hong Kong-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "84.17.57.115"
+    port: 65142
+    public-key: "zi62xnrtbvAbaavB8MLoTF36BX/stxjfnGJ6mIsZYzg="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇮🇸 Iceland-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: ""
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "185.165.170.3"
+    port: 443
+    public-key: "ua7TUXkcSiiHeTyCok5b3PX9DkJ4l5yVvGlSmJ34WU8="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    dns: ["10.255.255.2"]
+    allowed-ips: ["0.0.0.0/0", "::/0"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇮🇸 Iceland-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "23.92.127.36"
+    port: 65142
+    public-key: "VgzE+XeQUxX54wMZdhRBU4Qxqba95iVpXi197ZbBBgA="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇮🇸 Iceland-WG-2"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "185.165.170.3"
+    port: 65142
+    public-key: "ua7TUXkcSiiHeTyCok5b3PX9DkJ4l5yVvGlSmJ34WU8="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇮🇹 Italy-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "84.17.59.67"
+    port: 65142
+    public-key: "QI+u918O4tyAtoV37B6HVdiQeZoEUi0dWXhSsC3LiWQ="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇯🇵 Japan-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "138.199.22.163"
+    port: 65142
+    public-key: "8n68GM7n6dm6Hj3RIIh5q1q6Un52Cq82LYEXHRAtPg4="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇰🇪 Kenya-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "45.138.86.228"
+    port: 65142
+    public-key: "S/qPJPWnfwfb1pWIcKN8FH71j5dFt9eH2KbEeU1+QlE="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇱🇹 Lithuania-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: ""
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "37.156.216.148"
+    port: 443
+    public-key: "0CUpqMsVggxsjvdZewCsBFsw84goCitq0G9nytQhpDw="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    dns: ["10.255.255.2"]
+    allowed-ips: ["0.0.0.0/0", "::/0"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇱🇹 Lithuania-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "37.156.216.148"
+    port: 65142
+    public-key: "0CUpqMsVggxsjvdZewCsBFsw84goCitq0G9nytQhpDw="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇱🇺 Luxembourg-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "185.221.132.228"
+    port: 65142
+    public-key: "BzMLell5uUM/d9aNGaGMog+GFH36s4dFO0WuQ6/VxCg="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇲🇰 North Macedonia-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "185.225.28.52"
+    port: 65142
+    public-key: "9J0kA4c4i7N/+6B+3j0zFkDTHocZNsw6eK6+sLZ1qCQ="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇳🇱 Netherlands-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "84.17.46.3"
+    port: 65142
+    public-key: "pLzFr9exM2Z5oXw0iuKnXIJZxa4I0UEmyFC85sHtDwk="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇳🇱 Netherlands-WG-2"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "89.238.150.230"
+    port: 65142
+    public-key: "yrmgyxaJAxTEth7Gc8lXOQVHn9Gn/fzd4cLE+0WZjFI="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+      
+  - name: "🇳🇱 Netherlands-WG-3"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "185.253.96.4"
+    port: 65142
+    public-key: "c9QHUQhVUNIYqcp5HQ4gwoSoKzAgK8uSsoiJUrlriDA="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇳🇴 Norway-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "37.120.203.68"
+    port: 65142
+    public-key: "y+Kvlfz0z8DF17hVvEezMml3SH3OaB2l5l09DPdQNCk="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇳🇿 New Zealand-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "103.108.94.164"
+    port: 80
+    public-key: "el0He87GLmmywBmn7ErEiuKd5Bjc6Q4zWciL86rYcxw="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇵🇦 Panama-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "138.186.142.204"
+    port: 65142
+    public-key: "3L8yhe+v7TzBeesOFxSdU2VUa8FG4PTuoiiUoV7DAGY="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇵🇱 Poland-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "84.17.55.99"
+    port: 65142
+    public-key: "MYoOwWssF5fWZ+bOQINzfitdjwyqiHcJhr607wSAzEY="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇷🇺 Russia-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: ""
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "188.124.42.116"
+    port: 443
+    public-key: "gLPWBcPANL0mgwEkImb6PUJmR2ncz7S9DKIDDYvgJkk="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    dns: ["10.255.255.2"]
+    allowed-ips: ["0.0.0.0/0", "::/0"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇷🇺 Russia-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "95.143.177.67"
+    port: 65142
+    public-key: "A557Tcs9ezMHjMO3QoCox2fgcc9/uR/nOjbw28AKqkg="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇷🇺 Russia-WG-2"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "188.124.42.116"
+    port: 65142
+    public-key: "gLPWBcPANL0mgwEkImb6PUJmR2ncz7S9DKIDDYvgJkk="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇷🇺 Russia-WG-3"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "94.242.50.185"
+    port: 65142
+    public-key: "Yom91OWyt0otz1S4hgQMhp1q1y8tpDvUWwVkNXpmpjc="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇸🇪 Sweden-WG"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: ""
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "185.156.175.180"
+    port: 443
+    public-key: "uFOg97vQhHVCUfZy/HwmGH+dR6/9lpeWZ5tV3PysHRE="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    dns: ["10.255.255.2"]
+    allowed-ips: ["0.0.0.0/0", "::/0"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇸🇪 Sweden-WG-1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "195.181.166.130"
+    port: 65142
+    public-key: "HENIT1CTAKjPrhG4s64jPJSzEjtEZPRARxA3amm49WU="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇸🇪 Sweden-WG-2"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "79.142.76.199"
+    port: 65142
+    public-key: "P5X43E/SgvnJtbrKnJwLFxqFoZGsCghW2SxlXvfdzm0="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇺🇦 Ukraine"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 37.19.218.3
+    port: 65142
+    public-key: "xd+b0SNB38ILyN8mfY3d7w7zLggbq4CkkxqPavP2OUk="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇹🇼 Taiwan"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 185.189.163.176
+    port: 65142
+    public-key: "dAAkV3G3YFurH3+3198clav9vlh4FxB1asqNc0tLeCk="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇸🇬 Singapore"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: ""
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: "156.146.56.112"
+    port: 443
+    public-key: "sv9o+LudivUcZh3f92hEFFu5KGCT/2QISYy3OpPC0h0="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    dns: ["10.255.255.2"]
+    allowed-ips: ["0.0.0.0/0", "::/0"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h3: 3
+      h4: 4
+
+  - name: "🇸🇬 Singapore 1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 156.146.56.112
+    port: 65142
+    public-key: "sv9o+LudivUcZh3f92hEFFu5KGCT/2QISYy3OpPC0h0="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇸🇬 Singapore 2"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 103.107.198.228
+    port: 65142
+    public-key: "tJa6iPx6mpOktn5KoalMslWcpg6pRUdVx3bKDi3wtDg="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸 United States 2"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 167.88.60.244
+    port: 65142
+    public-key: "/oz2frQv99JveBgmTXW22QXIEulQURK79BW+ugk8fCE="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸 United States 3"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 23.94.74.100
+    port: 65142
+    public-key: "mRksyUF7wDK/8uBoPoEujp+yoUhjhq0N2LnNJFJnmiE="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸 United States 4"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 104.255.169.111
+    port: 65142
+    public-key: "oIt9F8IfWqCvSQACrDcmfLPFrhn+RtG+Mr9/sd4VSSU="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸 United States 5"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 199.217.104.228
+    port: 65142
+    public-key: "5yBJlSpfxd8Hq4+X4ZD60MYc6tosaMh5inQwA18XCCk="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸 United States 6"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 198.12.64.36
+    port: 65142
+    public-key: "z77o+FZ5AcTxTvkNyjLv69ZqaQtzFoS6UdtTK1eyoE8="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸 United States 7"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 23.95.42.212
+    port: 65142
+    public-key: "47tLjymDPpTIBerb+wn02/XNFABF4YDAGwOnijSoZmQ="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸 United States 8"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: mci-371-wg.whiskergalaxy.com
+    port: 65142
+    public-key: "0VAbqR6QprUwYMbgo1Xuel23UzzibC7OIxDJYAe3wx4="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸 United States 9"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 217.138.217.212
+    port: 65142
+    public-key: "fvmyuUJF8JvjzIts5bROwwZQ0zkSB7lk/q8E4G3+F20="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸 United States 10"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 89.187.187.99
+    port: 65142
+    public-key: "7CGKj3gnMrJ73Q3TX/YPtk94ZqX+H3kfBbMwfhze/Hg="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸 United States 11"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 194.5.215.196
+    port: 65142
+    public-key: "1S9LgDyVSo2X34ZG8ukQQ7vqL5RpmXszNe0SYNjiUws="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4   
+
+  - name: "🇺🇸 United States"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 198.147.22.227
+    port: 65142
+    public-key: "b5fIKEXhihCI7f4NOkQO/2BOd+bYHa0c05OylImgB0E="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇻🇳 Vietnam"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 103.9.79.220
+    port: 65142
+    public-key: "SxBT11IISNRou7thGo5A1QtaMjfzPIzZXDxdYEbDxhE="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇿🇦 South Africa 1"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 165.73.248.92
+    port: 65142
+    public-key: "stPvzj5yM1z5Qg9H3gMvAKNPJLU0X3SeUSJPg3wqDR8="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇿🇦 South Africa"
+    type: wireguard
+    ip: "100.80.234.177/32"
+    ipv6: "2001:db8:1::1/128"
+    private-key: "cIq+3tcHVT7gRMl4kIv0WE68ERiTmDtA7rhyHhLJ/mg="
+    server: 197.242.159.229
+    port: 65142
+    public-key: "Nh5LEJT44xbuvTQnv3OZ0bXi09BFXV4SBB1XVMI12Ec="
+    pre-shared-key: "N/gfMZSjvP8mbXfVP2hnD5CX8BkGvOyheJ67mCpD+QQ="
+    allowed-ips: ["0.0.0.0/0", "::/0", "10.0.0.0/8"]
+    reserved: "AAAA"
+    udp: true
+    mtu: 1280
+    dns: ["10.255.255.2", "8.8.8.8"]
+    dialer-proxy: ""
+    amnezia-wg-option:
+      jc: 4
+      jmin: 40
+      jmax: 70
+      s1: 0
+      s2: 0
+      h1: 1
+      h2: 2
+      h4: 3
+      h3: 4
+
+  - name: "🇺🇸@hamedp71_vless-US-1"
+    type: vless
+    server: amazon-17.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
     tls: true
-    network: ws
-    ws-opts:
-      path: "/ws"
-      headers:
-        Host: zula.ir
-    sni: "zula.ir"
+    flow: xtls-rprx-vision
     client-fingerprint: chrome
-    skip-cert-verify: true
-    encryption: none
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-2"
+    type: vless
+    server: amazon-20.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-3"
+    type: vless
+    server: amazon-13.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-4"
+    type: vless
+    server: amazon-15.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-5"
+    type: vless
+    server: amazon-17.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇰🇷@hamedp71_vless-KR-1"
+    type: vless
+    server: amazon-4.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇰🇷@hamedp71_vless-KR-2"
+    type: vless
+    server: amazon-13.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇰🇷@hamedp71_vless-KR-3"
+    type: vless
+    server: amazon-13.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇰🇷@hamedp71_vless-KR-4"
+    type: vless
+    server: amazon-13.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-6"
+    type: vless
+    server: amazon-15.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_vless-JP-1"
+    type: vless
+    server: amazon-20.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_vless-JP-2"
+    type: vless
+    server: amazon-17.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_vless-JP-3"
+    type: vless
+    server: amazon-4.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇰🇷@hamedp71_vless-KR-5"
+    type: vless
+    server: amazon-20.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇰🇷@hamedp71_vless-KR-6"
+    type: vless
+    server: amazon-13.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇰🇷@hamedp71_vless-KR-7"
+    type: vless
+    server: amazon-17.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_vless-JP-4"
+    type: vless
+    server: amazon-4.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_vless-JP-5"
+    type: vless
+    server: amazon-15.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇰🇷@hamedp71_vless-KR-8"
+    type: vless
+    server: amazon-20.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇰🇷@hamedp71_vless-KR-9"
+    type: vless
+    server: amazon-17.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_vless-JP-6"
+    type: vless
+    server: amazon-4.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇸🇪@hamedp71_vless-SE-1"
+    type: vless
+    server: amazon-13.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇰🇷@hamedp71_vless-KR-10"
+    type: vless
+    server: amazon-15.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_ss-JP-1"
+    type: ss
+    server: 167.17.179.116
+    port: 8388
+    cipher: aes-256-gcm
+    password: pRAqZ4afakQyiP8f
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-1"
+    type: vless
+    server: bfly.tuozs.ir
+    port: 2083
+    uuid: de4f5606-baf6-4bc2-a715-7cfe39dda1ed
+    network: grpc
+    tls: true
+    client-fingerprint: firefox
+    servername: miro.com
+    reality-opts:
+      public-key: tMVNburGfNg0IHRgzlmoqV22mx1GgkRe8qzBouEYY3Y
+      short-id: a25aca9336
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-2"
+    type: vless
+    server: frangets.rtpxc.com
+    port: 8991
+    uuid: 4ed90fc3-c483-4f0a-847c-2d57f2160546
+    network: tcp
+    tls: true
+    client-fingerprint: chrome
+    servername: Yahoo.com
+    reality-opts:
+      public-key: 4iRgsprSY0pw6exP4rZhesdsjuLANTNEy2clmgh9i1Q
+      short-id: ab23a2cd0e3de56a
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-7"
+    type: vless
+    server: amazon-15.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-3"
+    type: vless
+    server: fra.iranbuildings.com
+    port: 2096
+    uuid: 01860891-2645-420f-a494-a653d960f58d
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-4"
+    type: vless
+    server: 77.110.99.62
+    port: 443
+    uuid: fa-7736035993-1755891114560183
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: steampowered.com
+    reality-opts:
+      public-key: 2rjzbqQ49m-jpfzhiuBNb8Izwwjw0dIg5JAKdv-B2kE
+      short-id: d1d42381ba35
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇨🇦@hamedp71_ss-CA-1"
+    type: ss
+    server: 149.28.255.6
+    port: 816
+    cipher: chacha20-ietf-poly1305
+    password: GyZ5Xo0ht41vYmW3H4
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇹🇷@hamedp71_vless-TR-1"
+    type: vless
+    server: 188.132.141.247
+    port: 8880
+    uuid: f716fa40-e997-42d8-b93c-7122c63cc122
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇹🇼@hamedp71_vless-TW-1"
+    type: vless
+    server: nnctwclyx.codesofun.pp.ua
+    port: 443
+    uuid: 8b9c63ff-6789-449d-e5fd-5b83fef2b440
+    network: ws
+    tls: true
+    servername: nnctw.codesofun.pp.ua
+    ws-opts:
+      path: /2261acb5
+      headers:
+        Host: nnctw.codesofun.pp.ua
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇸🇬@hamedp71_vless-SG-1"
+    type: vless
+    server: amazon-4.cristiano.name.ng
+    port: 443
+    uuid: 4c26ebc3-7784-46d8-b52a-7b0ccae6f4b4
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: store.steampowered.com
+    reality-opts:
+      public-key: TGlPtfVzGIVpMauPRMGJj2Uu6GUiCpu5ZizIIjw-wx4
+      short-id: f5
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇵🇱@hamedp71_vless-PL-1"
+    type: vless
+    server: 2.58.95.16
+    port: 34045
+    uuid: d8dd94fd-540e-461d-b5d4-acebef02c22a
+    network: tcp
+    tls: true
+    client-fingerprint: chrome
+    servername: visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me
+    reality-opts:
+      public-key: cDaDzPr3PlS3NM8lreHZbdo-Mhqz8vMBzMSkHXhGIUA
+      short-id: e8ab71d0
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇹🇷@hamedp71_ss-TR-1"
+    type: ss
+    server: 77.83.245.190
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: haQpIdcLwwtb
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-5"
+    type: vless
+    server: 91.99.70.212
+    port: 443
+    uuid: 738ebc1c-c44a-418e-8c2c-f9e2efe1f4fe
+    network: grpc
+    tls: true
+    client-fingerprint: chrome
+    servername: www.cdn77.com
+    reality-opts:
+      public-key: Zjzu45fPTjjaIcBoYyaLqieLtsWJD8ujdzNOQodWvnk
+      short-id: ''
+    grpc-opts:
+      grpc-service-name: '@VPN_ROOM----------@VPN_ROOM--------@VPN_ROOM----------@VPN_ROOM--------@VPN_ROOM----------@VPN_ROOM--------@VPN_ROOM----------@VPN_ROOM--------@VPN_ROOM----------@VPN_ROOM--------@VPN_ROOM----------@VPN_ROOM--------@VPN_ROOM----------@VPN_ROOM--------@VPN_ROOM----------@VPN_ROOM--------@VPN_ROOM----------@VPN_ROOM--------@VPN_ROOM----------@VPN_ROOM--------@VPN_ROOM'
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇮🇳@hamedp71_vless-IN-1"
+    type: vless
+    server: 45.88.183.158
+    port: 44629
+    uuid: d3daa900-0377-4575-9ebc-c4d88cb8486c
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-6"
+    type: vless
+    server: 91.99.117.223
+    port: 443
+    uuid: 04a68e50-8c5c-447d-8416-9cc075e78a85
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-7"
+    type: vless
+    server: deu246.bypassall.org
+    port: 443
+    uuid: b4b8aa1f-77d2-4851-a5a4-f78886f3e997
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: www.bing.com
+    reality-opts:
+      public-key: BhTJ3phnq-Z-10aFKSsj1lzhA8mULR4L6leE4-0WTAs
+      short-id: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇦🇹@hamedp71_ss-AT-1"
+    type: ss
+    server: 77.110.110.240
+    port: 443
+    cipher: aes-256-gcm
+    password: d70ef8b5-6048-4c0d-be4d-fc60399b0f45
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇮🇳@hamedp71_vless-IN-2"
+    type: vless
+    server: 172.105.57.184
+    port: 2321
+    uuid: da1668a7-3a7f-405d-874e-c28652c68c4d
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-8"
+    type: vless
+    server: cloudflare.182682.xyz
+    port: 2086
+    uuid: f2fdcc30-a0c1-434d-94a7-dc8fc2c11a45
+    network: ws
+    tls: false
+    ws-opts:
+      path: /TG@naichachong
+      headers:
+        Host: free.naichachong.top
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-8"
+    type: vless
+    server: 91.99.214.30
+    port: 443
+    uuid: c39a101c-0a7b-4940-8e6a-f8346d70b24b
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-9"
+    type: vless
+    server: 207.154.236.4
+    port: 20087
+    uuid: df0e67fc-a6e5-41d8-95fd-97dfb96d2802
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-10"
+    type: vless
+    server: 188.245.75.235
+    port: 443
+    uuid: e89ba39d-ae7e-493a-a57b-cdd55b42b4e3
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_ss-DE-1"
+    type: ss
+    server: 84.200.91.228
+    port: 1080
+    cipher: chacha20-ietf-poly1305
+    password: 5ZQh4pssSk4aK1JG1XhBRg
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇨🇦@hamedp71_ss-CA-2"
+    type: ss
+    server: 38.180.211.126
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: Kuiqk2cP0BMWrgme9IfEvp
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-11"
+    type: vless
+    server: 91.99.203.123
+    port: 443
+    uuid: f3af923e-ecfe-46d5-9c27-4ff95f739afe
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_ss-US-1"
+    type: ss
+    server: imap.roomyinmita.name
+    port: 40565
+    cipher: chacha20-ietf-poly1305
+    password: MnEw5zo2ZhdS8Gy9fAMPfbhoguuv8biNYpoyHoNQLE2oZXXA4U4y6iNTYMezjaiBvQWv2N4b43gp9SVEG3nYvMf75p46k3He
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇮🇳@hamedp71_vless-IN-3"
+    type: vless
+    server: 45.88.183.164
+    port: 49355
+    uuid: ef246c6f-6e7d-4286-af33-5485544b0ba8
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇨🇭@hamedp71_ss-CH-1"
+    type: ss
+    server: 204.136.10.115
+    port: 1866
+    cipher: chacha20-ietf-poly1305
+    password: oXGp1+ihlfKg826H
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_ss-DE-2"
+    type: ss
+    server: 185.177.229.245
+    port: 1866
+    cipher: chacha20-ietf-poly1305
+    password: oXGp1+ihlfKg826H
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇵🇱@hamedp71_vless-PL-2"
+    type: vless
+    server: fina.iranbuildings.com
+    port: 8444
+    uuid: ac083fa9-df9a-4722-b70d-24c17bef0516
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇹🇷@hamedp71_vless-TR-2"
+    type: vless
+    server: 185.234.66.82
+    port: 443
+    uuid: b5e8bfe7-6cdb-402d-b243-1e0f53ebb582
+    network: ws
+    tls: true
+    client-fingerprint: chrome
+    servername: 185.234.66.82
+    ws-opts:
+      path: /jzmdpvws
+      headers:
+        Host: 185.234.66.82
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-9"
+    type: vless
+    server: 45.82.251.93
+    port: 8880
+    uuid: e4824193-4f54-453b-d037-88368e85ef0e
+    network: grpc
+    tls: false
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-10"
+    type: vless
+    server: 185.236.232.243
+    port: 8880
+    uuid: e4824193-4f54-453b-d037-88368e85ef0e
+    network: grpc
+    tls: false
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🏳@hamedp71_ss--1"
+    type: ss
+    server: 54.238.207.188
+    port: 8319
+    cipher: chacha20-ietf-poly1305
+    password: ljqdalum13..
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_ss-JP-2"
+    type: ss
+    server: 160.16.123.124
+    port: 10087
+    cipher: aes-128-gcm
+    password: '10086'
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-11"
+    type: vless
+    server: 185.236.232.189
+    port: 8880
+    uuid: e4824193-4f54-453b-d037-88368e85ef0e
+    network: grpc
+    tls: false
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-12"
+    type: vless
+    server: 54.37.205.0
+    port: 59332
+    uuid: d2dc2527-33d5-46f3-f39c-36da72fb1a62
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇦🇹@hamedp71_ss-AT-2"
+    type: ss
+    server: 77.110.110.117
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: 9JeYy8SkViXuSHVs9GFeSe
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-12"
+    type: vless
+    server: 5.181.171.2
+    port: 443
+    uuid: 8e6acce9-8b56-7190-d491-7d84f8189e26
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: speed.cloudflare.com
+    reality-opts:
+      public-key: YNGotlyAx3ELUmi4lxOUjiEDmibqf1pPUTE9o3YYT2Y
+      short-id: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-13"
+    type: vless
+    server: 5.181.171.2
+    port: 443
+    uuid: 8e6acce9-8b56-7190-d491-7d84f8189e26
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: speed.cloudflare.com
+    reality-opts:
+      public-key: YNGotlyAx3ELUmi4lxOUjiEDmibqf1pPUTE9o3YYT2Y
+      short-id: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇱@hamedp71_vless-NL-1"
+    type: vless
+    server: 185.250.181.128
+    port: 16106
+    uuid: aa1aac84-6a86-41b9-bd34-1a036e06976f
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: yahoo.com
+    reality-opts:
+      public-key: FnkrwrjQqktvwxPvLn7KyWZIq8bUAvVaeCrI_VhAZ34
+      short-id: 3b6239cf6fd84dd3
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇨🇭@hamedp71_vless-CH-1"
+    type: vless
+    server: 5.182.36.251
+    port: 16331
+    uuid: d7dbeb1e-268c-465c-8f59-489f14703efd
+    network: tcp
+    tls: true
+    client-fingerprint: chrome
+    servername: yahoo.com
+    reality-opts:
+      public-key: wYtc0dMr5fw5bBQkbLNpTqtu0m4B9NKnOyEWjRJUmzk
+      short-id: 910aab
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇹🇷@hamedp71_vless-TR-3"
+    type: vless
+    server: 45.12.143.191
+    port: 20329
+    uuid: e105e56a-5f81-41a2-ab44-bfffc9b00674
+    network: tcp
+    tls: true
+    client-fingerprint: chrome
+    servername: yahoo.com
+    reality-opts:
+      public-key: Lj3MXlg16CTFHtU88acSS-ACfGnwJ_xkU6dC6k8OeDo
+      short-id: 4602ee9f9f36
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_ss-US-2"
+    type: ss
+    server: hackney-latest-strike.freesocks.work
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: XUMTygEM1jVYIvyXqUATU
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_ss-JP-3"
+    type: ss
+    server: 153.121.43.183
+    port: 10087
+    cipher: aes-128-gcm
+    password: '10086'
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-14"
+    type: vless
+    server: 45.82.251.78
+    port: 8880
+    uuid: e4824193-4f54-453b-d037-88368e85ef0e
+    network: grpc
+    tls: false
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇫🇷@hamedp71_ss-FR-1"
+    type: ss
+    server: 77.105.166.12
+    port: 8594
+    cipher: chacha20-ietf-poly1305
+    password: mSQitU5jR17nyWgcXOPrTW
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🏳@hamedp71_vless--1"
+    type: vless
+    server: 45.83.21.107
+    port: 59997
+    uuid: c3dd7afc-151f-44f6-8263-ad3c8420ae2f
+    network: tcp
+    tls: true
+    client-fingerprint: chrome
+    servername: yahoo.com
+    reality-opts:
+      public-key: m4ipEx1PUfb6F5Uv5Mwe5g34TzdNkG_rIQ0xw-Do1mI
+      short-id: 816473be23c2
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇭🇺@hamedp71_vless-HU-1"
+    type: vless
+    server: 5.182.38.91
+    port: 17267
+    uuid: 1c7fcc38-e6be-43c5-875f-b8de2516b9f2
+    network: tcp
+    tls: true
+    client-fingerprint: chrome
+    servername: yahoo.com
+    reality-opts:
+      public-key: SnWZg6ORcQepuWLI1EVCTTVc4KyfDiGWR4o_CXCMhgk
+      short-id: 4ae260
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇦🇹@hamedp71_ss-AT-3"
+    type: ss
+    server: 95.163.176.37
+    port: 8506
+    cipher: chacha20-ietf-poly1305
+    password: eUh4lSpi7nOYj0vSrqlUh0
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇲🇹@hamedp71_ss-MT-1"
+    type: ss
+    server: 171.22.254.17
+    port: 990
+    cipher: chacha20-ietf-poly1305
+    password: f8f7aCzckKbsF8p3
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇦🇱@hamedp71_vless-AL-1"
+    type: vless
+    server: 78.159.131.107
+    port: 443
+    uuid: 10f3650d-32f6-470a-b100-e29471cf3380
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: random
+    servername: pingless.com
+    reality-opts:
+      public-key: 6vqqlSsqIQLQ-pmkPfTQ0tJ2kh3U74YqTUcn06nYagY
+      short-id: b6
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-13"
+    type: vless
+    server: deep-radio.seotoolsforyou.co.uk
+    port: 80
+    uuid: 5139af95-a453-46c6-831a-a532b6b51305
+    network: ws
+    tls: false
+    ws-opts:
+      path: /
+      headers:
+        Host: deep-radio.seotoolsforyou.co.uk
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇵🇹@hamedp71_ss-PT-1"
+    type: ss
+    server: 185.231.233.173
+    port: 990
+    cipher: chacha20-ietf-poly1305
+    password: f8f7aCzckKbsF8p3
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇴@hamedp71_ss-NO-1"
+    type: ss
+    server: 185.213.23.226
+    port: 990
+    cipher: chacha20-ietf-poly1305
+    password: f8f7aCzckKbsF8p3
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_ss-US-3"
+    type: ss
+    server: 104.192.226.106
+    port: 990
+    cipher: chacha20-ietf-poly1305
+    password: f8f7aCzckKbsF8p3
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇻🇳@hamedp71_ss-VN-1"
+    type: ss
+    server: 103.163.218.2
+    port: 990
+    cipher: chacha20-ietf-poly1305
+    password: f8f7aCzckKbsF8p3
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇸🇮@hamedp71_ss-SI-1"
+    type: ss
+    server: 192.71.244.150
+    port: 990
+    cipher: chacha20-ietf-poly1305
+    password: f8f7aCzckKbsF8p3
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇱@hamedp71_vless-NL-2"
+    type: vless
+    server: small-meal.oneeat.co
+    port: 80
+    uuid: d1e44075-8c92-4698-9db0-e71d7015b757
+    network: ws
+    tls: false
+    ws-opts:
+      path: /
+      headers:
+        Host: small-meal.oneeat.co
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇱@hamedp71_vless-NL-3"
+    type: vless
+    server: light-presence.oneeat.co
+    port: 80
+    uuid: 7e74ff43-3a90-48b3-8372-7d92a045c2d4
+    network: ws
+    tls: false
+    ws-opts:
+      path: /
+      headers:
+        Host: light-presence.oneeat.co
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-14"
+    type: vless
+    server: brainy-party.seotoolsforyou.co.uk
+    port: 80
+    uuid: 34797f17-09a1-400c-9f4b-275718d62a0f
+    network: ws
+    tls: false
+    ws-opts:
+      path: /
+      headers:
+        Host: brainy-party.seotoolsforyou.co.uk
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-15"
+    type: vless
+    server: bewildered-poem.seotoolsforyou.co.uk
+    port: 80
+    uuid: 0f4865d9-9405-4703-a282-46e326e6d9e7
+    network: ws
+    tls: false
+    ws-opts:
+      path: /
+      headers:
+        Host: bewildered-poem.seotoolsforyou.co.uk
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-16"
+    type: vless
+    server: grounded-brother.seotoolsforyou.co.uk
+    port: 80
+    uuid: 52adc6ba-b1c7-4541-a594-08fc698be640
+    network: ws
+    tls: false
+    ws-opts:
+      path: /
+      headers:
+        Host: grounded-brother.seotoolsforyou.co.uk
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-17"
+    type: vless
+    server: obedient-menu.seotoolsforyou.co.uk
+    port: 80
+    uuid: 561623c8-4983-44d3-a6ef-92b803a74ee8
+    network: ws
+    tls: false
+    ws-opts:
+      path: /
+      headers:
+        Host: obedient-menu.seotoolsforyou.co.uk
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-18"
+    type: vless
+    server: modern-promise.seotoolsforyou.co.uk
+    port: 80
+    uuid: bd9b0366-e5dd-4665-bd5b-9896bc7327ae
+    network: ws
+    tls: false
+    ws-opts:
+      path: /
+      headers:
+        Host: modern-promise.seotoolsforyou.co.uk
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_vless-DE-19"
+    type: vless
+    server: wild-bird.seotoolsforyou.co.uk
+    port: 80
+    uuid: 1d0dfde1-9f18-4557-9af8-4f3124ee5dcd
+    network: ws
+    tls: false
+    ws-opts:
+      path: /
+      headers:
+        Host: wild-bird.seotoolsforyou.co.uk
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-15"
+    type: vless
+    server: all.tellmethetrue.shop
+    port: 443
+    uuid: 401374e6-df77-41fb-f638-dad8184f175b
+    network: grpc
+    tls: true
+    servername: pqh28v5.hiddendom.shop
+    alpn:
+      - h2
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-16"
+    type: vless
+    server: pqh30v8.waipdirect.shop
+    port: 8880
+    uuid: e4824193-4f54-453b-d037-88368e85ef0e
+    network: grpc
+    tls: false
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇱@hamedp71_ss-NL-1"
+    type: ss
+    server: switcher-nick-croquet.freesocks.work
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: 9tqhMdIrTkgQ46PvhYAtMH
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-17"
+    type: vless
+    server: 45.82.251.184
+    port: 8880
+    uuid: e4824193-4f54-453b-d037-88368e85ef0e
+    network: grpc
+    tls: false
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-18"
+    type: vless
+    server: 45.82.251.58
+    port: 8880
+    uuid: e4824193-4f54-453b-d037-88368e85ef0e
+    network: grpc
+    tls: false
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-19"
+    type: vless
+    server: 45.82.251.80
+    port: 8880
+    uuid: e4824193-4f54-453b-d037-88368e85ef0e
+    network: grpc
+    tls: false
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-20"
+    type: vless
+    server: 45.82.251.63
+    port: 8880
+    uuid: e4824193-4f54-453b-d037-88368e85ef0e
+    network: grpc
+    tls: false
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_vless-JP-7"
+    type: vless
+    server: 5.253.41.223
+    port: 80
+    uuid: a0a866bd-8c0c-464c-9b96-c6dafa154419
+    network: ws
+    tls: false
+    ws-opts:
+      path: /vless/?ed=2048
+      headers:
+        Host: 5.253.41.223
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇮🇩@hamedp71_vless-ID-1"
+    type: vless
+    server: 172.232.248.242
+    port: 2321
+    uuid: 0d6b5af6-17df-4bb1-af76-e524f00602a5
+    network: tcp
+    tls: false
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇯🇵@hamedp71_vless-JP-8"
+    type: vless
+    server: 45.12.134.217
+    port: 80
+    uuid: ed242313-b502-4a4a-97f4-336da621a837
+    network: ws
+    tls: false
+    ws-opts:
+      path: /vless/?ed
+      headers:
+        Host: 45.12.134.217
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇱@hamedp71_ss-NL-2"
+    type: ss
+    server: 185.245.107.250
+    port: 2222
+    cipher: chacha20-ietf-poly1305
+    password: qscavF5UviIL-8V-E4raBA
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇫🇮@hamedp71_vless-FI-1"
+    type: vless
+    server: app.chandplus.com
+    port: 443
+    uuid: fa72a38c-56bf-4f3b-9735-e96e9840ae54
+    network: tcp
+    tls: true
+    client-fingerprint: random
+    servername: app.chandplus.com
+    alpn:
+      - h3
+      - h2
+      - http/1.1
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-21"
+    type: vless
+    server: 45.8.146.207
+    port: 80
+    uuid: a6c4db3e-7785-429e-8bc5-9eaf7b1a79b1
+    network: ws
+    tls: false
+    ws-opts:
+      path: /vless/
+      headers:
+        Host: 45.8.146.207
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇮🇳@hamedp71_ss-IN-1"
+    type: ss
+    server: 103.111.114.29
+    port: 57456
+    cipher: chacha20-ietf-poly1305
+    password: 360e21d21977dc11
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_ss-DE-3"
+    type: ss
+    server: 46.101.245.131
+    port: 44354
+    cipher: chacha20-ietf-poly1305
+    password: 9RviNa4tscjcmCB408vLSg
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇱@hamedp71_ss-NL-3"
+    type: ss
+    server: 164.92.156.41
+    port: 24206
+    cipher: chacha20-ietf-poly1305
+    password: zI7kiNZ0UfV9cXB73a4nRD
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇩🇪@hamedp71_ss-DE-4"
+    type: ss
+    server: 147.45.178.200
+    port: 57456
+    cipher: chacha20-ietf-poly1305
+    password: a58fa62b4944ddbf
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇫🇷@hamedp71_ss-FR-2"
+    type: ss
+    server: 81.19.137.222
+    port: 57456
+    cipher: chacha20-ietf-poly1305
+    password: a58fa62b4944ddbf
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇹🇷@hamedp71_ss-TR-2"
+    type: ss
+    server: 83.217.9.128
+    port: 2222
+    cipher: chacha20-ietf-poly1305
+    password: qscavF5UviIL-8V-E4raBA
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-22"
+    type: vless
+    server: pqh23v4.vetmainconf.shop
+    port: 8880
+    uuid: e4824193-4f54-453b-d037-88368e85ef0e
+    network: grpc
+    tls: false
+    servername: pqh23v4.vetmainconf.shop
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇫🇷@hamedp71_vless-FR-1"
+    type: vless
+    server: 185.231.205.99
+    port: 8880
+    uuid: df0680ca-e43c-498d-ed86-8e196eedd012
+    network: grpc
+    tls: false
+    grpc-opts:
+      grpc-service-name: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇫🇮@hamedp71_ss-FI-1"
+    type: ss
+    server: exchange.gameaurela.click
+    port: 52952
+    cipher: chacha20-ietf-poly1305
+    password: MLSNh21TrXjR2ok25Q2nE8ENT2zoBmPvka3RCCUAHZELCnWoekVjvaf89qwcRkdbxEfep2bc2aUtmnxqvF1ayQRez1JHjULj
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-23"
+    type: vless
+    server: 5.181.171.10
+    port: 443
+    uuid: 49ed01ad-3bb4-204f-b0ff-a58f658fd618
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: speed.cloudflare.com
+    reality-opts:
+      public-key: YNGotlyAx3ELUmi4lxOUjiEDmibqf1pPUTE9o3YYT2Y
+      short-id: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇮🇳@hamedp71_ss-IN-2"
+    type: ss
+    server: 134.209.147.198
+    port: 990
+    cipher: chacha20-ietf-poly1305
+    password: f8f7aCzckKbsF8p3
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-24"
+    type: vless
+    server: 5.181.171.10
+    port: 443
+    uuid: 49ed01ad-3bb4-204f-b0ff-a58f658fd618
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: speed.cloudflare.com
+    reality-opts:
+      public-key: YNGotlyAx3ELUmi4lxOUjiEDmibqf1pPUTE9o3YYT2Y
+      short-id: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇸🇬@hamedp71_ss-SG-1"
+    type: ss
+    server: 45.76.180.205
+    port: 31368
+    cipher: chacha20-ietf-poly1305
+    password: 2981511c-becb-4b53-8a89-57cd3c97b328
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-25"
+    type: vless
+    server: 5.181.171.10
+    port: 443
+    uuid: 49ed01ad-3bb4-204f-b0ff-a58f658fd618
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: speed.cloudflare.com
+    reality-opts:
+      public-key: YNGotlyAx3ELUmi4lxOUjiEDmibqf1pPUTE9o3YYT2Y
+      short-id: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇱@hamedp71_ss-NL-4"
+    type: ss
+    server: 45.87.175.28
+    port: 8080
+    cipher: chacha20-ietf-poly1305
+    password: oZIoA69Q8yhcQV8ka3Pa3A
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-26"
+    type: vless
+    server: 172.67.131.76
+    port: 443
+    uuid: afc9d688-520a-46fa-a98d-4511d1198cdd
+    network: ws
+    tls: true
+    client-fingerprint: chrome
+    servername: EEeE3.222767.xYz
+    alpn:
+      - http/1.1
+    ws-opts:
+      path: /Bla4bwO5lnIT6TyxDFklcPSbclvX
+      headers:
+        Host: eeee3.222767.xyz
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-27"
+    type: vless
+    server: 5.181.171.10
+    port: 443
+    uuid: 49ed01ad-3bb4-204f-b0ff-a58f658fd618
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: speed.cloudflare.com
+    reality-opts:
+      public-key: YNGotlyAx3ELUmi4lxOUjiEDmibqf1pPUTE9o3YYT2Y
+      short-id: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-28"
+    type: vless
+    server: 5.181.171.10
+    port: 443
+    uuid: 49ed01ad-3bb4-204f-b0ff-a58f658fd618
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: speed.cloudflare.com
+    reality-opts:
+      public-key: YNGotlyAx3ELUmi4lxOUjiEDmibqf1pPUTE9o3YYT2Y
+      short-id: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇮🇳@hamedp71_ss-IN-3"
+    type: ss
+    server: 82.180.146.173
+    port: 30607
+    cipher: aes-128-gcm
+    password: 162629d7-cb17-43b1-82c9-f9c7ae6cba70
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_vless-US-29"
+    type: vless
+    server: 5.181.171.10
+    port: 443
+    uuid: 49ed01ad-3bb4-204f-b0ff-a58f658fd618
+    network: tcp
+    tls: true
+    flow: xtls-rprx-vision
+    client-fingerprint: chrome
+    servername: speed.cloudflare.com
+    reality-opts:
+      public-key: YNGotlyAx3ELUmi4lxOUjiEDmibqf1pPUTE9o3YYT2Y
+      short-id: ''
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇬🇧@hamedp71_ss-GB-1"
+    type: ss
+    server: 85.210.120.237
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: Bog0ELmMM9DSxDdQ
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇪🇸@hamedp71_ss-ES-1"
+    type: ss
+    server: 92.38.171.215
+    port: 31348
+    cipher: chacha20-ietf-poly1305
+    password: 0RsrcFJ1vOsWEqg3P55hvaacKfuShT0cc1h0t8A0E0NA8u1uR
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇸🇬@hamedp71_vless-SG-2"
+    type: vless
+    server: 103.116.7.156
+    port: 8880
+    uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+    network: ws
+    tls: false
+    servername: Telegram-channel-WangCai2
+    ws-opts:
+      path: /Telegram-channel-WangCai2
+      headers:
+        Host: kjgx.laoyoutiao.link
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇸🇬@hamedp71_vless-SG-3"
+    type: vless
+    server: 141.193.27.29
+    port: 8880
+    uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+    network: ws
+    tls: false
+    servername: hk.laoyoutiao.link
+    ws-opts:
+      path: /
+      headers:
+        Host: hk.laoyoutiao.link
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇸🇬@hamedp71_vless-SG-4"
+    type: vless
+    server: 154.83.2.213
+    port: 8880
+    uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+    network: ws
+    tls: false
+    ws-opts:
+      path: /
+      headers:
+        Host: jp.laoyoutiao.link
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇸🇬@hamedp71_vless-SG-5"
+    type: vless
+    server: 14.102.229.63
+    port: 8880
+    uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+    network: ws
+    tls: false
+    servername: jp.laoyoutiao.link
+    ws-opts:
+      path: /Telegram
+      headers:
+        Host: jp.laoyoutiao.link
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇸🇬@hamedp71_vless-SG-6"
+    type: vless
+    server: 216.205.52.213
+    port: 8880
+    uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+    network: ws
+    tls: false
+    client-fingerprint: chrome
+    ws-opts:
+      path: /
+      headers:
+        Host: jp.laoyoutiao.link
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇸🇬@hamedp71_vless-SG-7"
+    type: vless
+    server: 25.26.27.29
+    port: 8880
+    uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+    network: ws
+    tls: false
+    servername: hk.laoyoutiao.link
+    ws-opts:
+      path: /TelegramU0001F1E8U0001F1F3
+      headers:
+        Host: hk.laoyoutiao.link
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇱@hamedp71_ss-NL-5"
+    type: ss
+    server: 45.158.171.60
+    port: 8080
+    cipher: chacha20-ietf-poly1305
+    password: oZIoA69Q8yhcQV8ka3Pa3A
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇱@hamedp71_ss-NL-6"
+    type: ss
+    server: 45.87.175.35
+    port: 8080
+    cipher: chacha20-ietf-poly1305
+    password: oZIoA69Q8yhcQV8ka3Pa3A
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇳🇱@hamedp71_ss-NL-7"
+    type: ss
+    server: 45.87.175.65
+    port: 8080
+    cipher: chacha20-ietf-poly1305
+    password: oZIoA69Q8yhcQV8ka3Pa3A
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
+  - name: "🇺🇸@hamedp71_ss-US-4"
+    type: ss
+    server: 173.244.56.9
+    port: 443
+    cipher: aes-128-gcm
+    password: shadowsocks
+    tfo: true
+    mptcp: true
+    fragment:
+      packets: tlshello
+      length: '10-20'
+      interval: '10-20'
 
 proxy-groups:
-  - name: "✅ گلوبال"
+  - name: "💚 گلوبال"
     type: select
     proxies: 
-      - "😎 انتخاب خودکار(بهترین) 😎"
-      - "🔁 سیستم فیلبک"
-      - "🇹🇷 hamedp71 - WireGuard"
-      - "🇦🇪 hamedp71 - WireGuard"
+      - "❤️ اختصاصی"
+      - "🤍 وارپ"
+      - "⚡انتخاب خودکار"
+      - "🇩🇪 ShadowTLS-Proxy"
+      - "🇩🇪 anytls-443"
       - "🇺🇸 US-hysteria"
       - "🇺🇸 1 US-hysteria"
       - "🇳🇱 NL-hysteria"
-      - "🇩🇪 anytls-443"
+      - "🇸🇪 hamedp71 hy2"
+      - "🇳🇱 hamedp71 hy2"
+      - "🇬🇧 hamedp71-1-V"
+      - "🇬🇧 hamedp71-2-V"
+      - "🇪🇸 hamedp71-3-V"
+      - "🇫🇷 hamedp71-4-V"
+      - "🇫🇷 hamedp71-5-V"
+      - "🇳🇱 hamedp71-6-V"
+      - "🇨🇦 hamedp71-7-V"
+      - "🇩🇪 hamedp71-8-V"
+      - "🇩🇪 hamedp71-9-V"
+      - "🇸🇬 hamedp71-10-V"
+      - "🇺🇸 hamedp71-11-V"
+      - "🇦🇺 hamedp71-12-V"
+      - "🇩🇪-Direct-VLESS"
+      - "🇩🇪-AD-CDN-VLESS"
+      - "🇩🇪-Telegram-VLESS"
+      - "🇸🇪 hamedp71-1-V"
+      - "🇸🇪 hamedp71-2-V"
+      - "🇸🇪 hamedp71-3-V"
+      - "🇸🇪 hamedp71-4-V"
+      - "🇸🇪 hamedp71-5-V"
+      - "🇸🇪 hamedp71-6-V"
+      - "🇸🇪 hamedp71-7-V"
+      - "🇸🇪 hamedp71-8-V"
+      - "🇸🇪 hamedp71-9-V"
+      - "🇸🇪 hamedp71-10-V"
+      - "🇸🇪 hamedp71-11-V"
+      - "🇸🇪 hamedp71-12-V"
+      - "🇸🇪 hamedp71-13-V"
+      - "🇸🇪 hamedp71-14-V"
       - "🇳🇱 1 hamedp71 - Vless"
       - "🇳🇱 2 hamedp71 - Vless"
       - "🇳🇱 3 hamedp71 - Vless"
@@ -1222,120 +5341,266 @@ proxy-groups:
       - "🇳🇱 25 hamedp71 - Vless"
       - "🇳🇱 26 hamedp71 - Vless"
       - "🇳🇱 27 hamedp71 - Vless"
-      - "🇩🇪-Direct-VLESS"
-      - "🇩🇪-AD-CDN-VLESS"
-      - "🇩🇪-Telegram-VLESS"
-      - "🇸🇪 hamedp71-1-V"
-      - "🇸🇪 hamedp71-2-V"
-      - "🇸🇪 hamedp71-3-V"
-      - "🇸🇪 hamedp71-4-V"
-      - "🇸🇪 hamedp71-5-V"
-      - "🇸🇪 hamedp71-6-V"
-      - "🇸🇪 hamedp71-7-V"
-      - "🇸🇪 hamedp71-8-V"
-      - "🇸🇪 hamedp71-9-V"
-      - "🇸🇪 hamedp71-10-V"
-      - "🇸🇪 hamedp71-11-V"
-      - "🇸🇪 hamedp71-12-V"
-      - "🇸🇪 hamedp71-13-V"
-      - "🇸🇪 hamedp71-14-V"
-      - "🇸🇪 hamedp71 hy2"
-      - "🇳🇱 hamedp71 hy2"
-      - "🇬🇧 hamedp71-1-V"
-      - "🇬🇧 hamedp71-2-V"
-      - "🇪🇸 hamedp71-3-V"
-      - "🇫🇷 hamedp71-4-V"
-      - "🇫🇷 hamedp71-5-V"
-      - "🇳🇱 hamedp71-6-V"
-      - "🇨🇦 hamedp71-7-V"
-      - "🇩🇪 hamedp71-8-V"
-      - "🇩🇪 hamedp71-9-V"
-      - "🇸🇬 hamedp71-10-V"
-      - "🇺🇸 hamedp71-11-V"
-      - "🇦🇺 hamedp71-12-V"
-
-  - name: "😎 انتخاب خودکار(بهترین) 😎"
+      
+  - name: "❤️ اختصاصی"
     type: url-test
-    url: "https://www.gstatic.com/generate_204"
-    interval: 30
+    url: "http://www.gstatic.com/generate_204"
+    interval: 90
     tolerance: 50
     proxies:
-      - "🇹🇷 hamedp71 - WireGuard"
-      - "🇦🇪 hamedp71 - WireGuard"
-      - "🇺🇸 US-hysteria"
-      - "🇺🇸 1 US-hysteria"
-      - "🇳🇱 NL-hysteria"
-      - "🇩🇪 anytls-443"
-      - "🇳🇱 1 hamedp71 - Vless"
-      - "🇳🇱 2 hamedp71 - Vless"
-      - "🇳🇱 3 hamedp71 - Vless"
-      - "🇳🇱 4 hamedp71 - Vless"
-      - "🇳🇱 5 hamedp71 - Vless"
-      - "🇳🇱 6 hamedp71 - Vless"
-      - "🇳🇱 7 hamedp71 - Vless"
-      - "🇳🇱 8 hamedp71 - Vless"
-      - "🇳🇱 9 hamedp71 - Vless"
-      - "🇳🇱 10 hamedp71 - Vless"
-      - "🇳🇱 11 hamedp71 - Vless"
-      - "🇳🇱 12 hamedp71 - Vless"
-      - "🇳🇱 13 hamedp71 - Vless"
-      - "🇳🇱 14 hamedp71 - Vless"
-      - "🇳🇱 15 hamedp71 - Vless"
-      - "🇳🇱 16 hamedp71 - Vless"
-      - "🇳🇱 17 hamedp71 - Vless"
-      - "🇳🇱 18 hamedp71 - Vless"
-      - "🇳🇱 19 hamedp71 - Vless"
-      - "🇳🇱 20 hamedp71 - Vless"
-      - "🇳🇱 21 hamedp71 - Vless"
-      - "🇳🇱 22 hamedp71 - Vless"
-      - "🇳🇱 23 hamedp71 - Vless"
-      - "🇳🇱 24 hamedp71 - Vless"
-      - "🇳🇱 25 hamedp71 - Vless"
-      - "🇳🇱 26 hamedp71 - Vless"
-      - "🇳🇱 27 hamedp71 - Vless"
-      - "🇩🇪-Direct-VLESS"
-      - "🇩🇪-AD-CDN-VLESS"
-      - "🇩🇪-Telegram-VLESS"
-      - "🇸🇪 hamedp71-1-V"
-      - "🇸🇪 hamedp71-2-V"
-      - "🇸🇪 hamedp71-3-V"
-      - "🇸🇪 hamedp71-4-V"
-      - "🇸🇪 hamedp71-5-V"
-      - "🇸🇪 hamedp71-6-V"
-      - "🇸🇪 hamedp71-7-V"
-      - "🇸🇪 hamedp71-8-V"
-      - "🇸🇪 hamedp71-9-V"
-      - "🇸🇪 hamedp71-10-V"
-      - "🇸🇪 hamedp71-11-V"
-      - "🇸🇪 hamedp71-12-V"
-      - "🇸🇪 hamedp71-13-V"
-      - "🇸🇪 hamedp71-14-V"
-      - "🇸🇪 hamedp71 hy2"
-      - "🇳🇱 hamedp71 hy2"
-      - "🇬🇧 hamedp71-1-V"
-      - "🇬🇧 hamedp71-2-V"
-      - "🇪🇸 hamedp71-3-V"
-      - "🇫🇷 hamedp71-4-V"
-      - "🇫🇷 hamedp71-5-V"
-      - "🇳🇱 hamedp71-6-V"
-      - "🇨🇦 hamedp71-7-V"
-      - "🇩🇪 hamedp71-8-V"
-      - "🇩🇪 hamedp71-9-V"
-      - "🇸🇬 hamedp71-10-V"
-      - "🇺🇸 hamedp71-11-V"
-      - "🇦🇺 hamedp71-12-V"
+      - "🇺🇸@hamedp71_vless-US-1"
+      - "🇺🇸@hamedp71_vless-US-2"
+      - "🇺🇸@hamedp71_vless-US-3"
+      - "🇺🇸@hamedp71_vless-US-4"
+      - "🇺🇸@hamedp71_vless-US-5"
+      - "🇰🇷@hamedp71_vless-KR-1"
+      - "🇰🇷@hamedp71_vless-KR-2"
+      - "🇰🇷@hamedp71_vless-KR-3"
+      - "🇰🇷@hamedp71_vless-KR-4"
+      - "🇺🇸@hamedp71_vless-US-6"
+      - "🇯🇵@hamedp71_vless-JP-1"
+      - "🇯🇵@hamedp71_vless-JP-2"
+      - "🇯🇵@hamedp71_vless-JP-3"
+      - "🇰🇷@hamedp71_vless-KR-5"
+      - "🇰🇷@hamedp71_vless-KR-6"
+      - "🇰🇷@hamedp71_vless-KR-7"
+      - "🇯🇵@hamedp71_vless-JP-4"
+      - "🇯🇵@hamedp71_vless-JP-5"
+      - "🇰🇷@hamedp71_vless-KR-8"
+      - "🇰🇷@hamedp71_vless-KR-9"
+      - "🇯🇵@hamedp71_vless-JP-6"
+      - "🇸🇪@hamedp71_vless-SE-1"
+      - "🇰🇷@hamedp71_vless-KR-10"
+      - "🇯🇵@hamedp71_ss-JP-1"
+      - "🇩🇪@hamedp71_vless-DE-1"
+      - "🇩🇪@hamedp71_vless-DE-2"
+      - "🇺🇸@hamedp71_vless-US-7"
+      - "🇩🇪@hamedp71_vless-DE-3"
+      - "🇩🇪@hamedp71_vless-DE-4"
+      - "🇨🇦@hamedp71_ss-CA-1"
+      - "🇹🇷@hamedp71_vless-TR-1"
+      - "🇹🇼@hamedp71_vless-TW-1"
+      - "🇸🇬@hamedp71_vless-SG-1"
+      - "🇵🇱@hamedp71_vless-PL-1"
+      - "🇹🇷@hamedp71_ss-TR-1"
+      - "🇩🇪@hamedp71_vless-DE-5"
+      - "🇮🇳@hamedp71_vless-IN-1"
+      - "🇩🇪@hamedp71_vless-DE-6"
+      - "🇩🇪@hamedp71_vless-DE-7"
+      - "🇦🇹@hamedp71_ss-AT-1"
+      - "🇮🇳@hamedp71_vless-IN-2"
+      - "🇺🇸@hamedp71_vless-US-8"
+      - "🇩🇪@hamedp71_vless-DE-8"
+      - "🇩🇪@hamedp71_vless-DE-9"
+      - "🇩🇪@hamedp71_vless-DE-10"
+      - "🇩🇪@hamedp71_ss-DE-1"
+      - "🇨🇦@hamedp71_ss-CA-2"
+      - "🇩🇪@hamedp71_vless-DE-11"
+      - "🇺🇸@hamedp71_ss-US-1"
+      - "🇮🇳@hamedp71_vless-IN-3"
+      - "🇨🇭@hamedp71_ss-CH-1"
+      - "🇩🇪@hamedp71_ss-DE-2"
+      - "🇵🇱@hamedp71_vless-PL-2"
+      - "🇹🇷@hamedp71_vless-TR-2"
+      - "🇺🇸@hamedp71_vless-US-9"
+      - "🇺🇸@hamedp71_vless-US-10"
+      - "🏳@hamedp71_ss--1"
+      - "🇯🇵@hamedp71_ss-JP-2"
+      - "🇺🇸@hamedp71_vless-US-11"
+      - "🇩🇪@hamedp71_vless-DE-12"
+      - "🇦🇹@hamedp71_ss-AT-2"
+      - "🇺🇸@hamedp71_vless-US-12"
+      - "🇺🇸@hamedp71_vless-US-13"
+      - "🇳🇱@hamedp71_vless-NL-1"
+      - "🇨🇭@hamedp71_vless-CH-1"
+      - "🇹🇷@hamedp71_vless-TR-3"
+      - "🇺🇸@hamedp71_ss-US-2"
+      - "🇯🇵@hamedp71_ss-JP-3"
+      - "🇺🇸@hamedp71_vless-US-14"
+      - "🇫🇷@hamedp71_ss-FR-1"
+      - "🏳@hamedp71_vless--1"
+      - "🇭🇺@hamedp71_vless-HU-1"
+      - "🇦🇹@hamedp71_ss-AT-3"
+      - "🇲🇹@hamedp71_ss-MT-1"
+      - "🇦🇱@hamedp71_vless-AL-1"
+      - "🇩🇪@hamedp71_vless-DE-13"
+      - "🇵🇹@hamedp71_ss-PT-1"
+      - "🇳🇴@hamedp71_ss-NO-1"
+      - "🇺🇸@hamedp71_ss-US-3"
+      - "🇻🇳@hamedp71_ss-VN-1"
+      - "🇸🇮@hamedp71_ss-SI-1"
+      - "🇳🇱@hamedp71_vless-NL-2"
+      - "🇳🇱@hamedp71_vless-NL-3"
+      - "🇩🇪@hamedp71_vless-DE-14"
+      - "🇩🇪@hamedp71_vless-DE-15"
+      - "🇩🇪@hamedp71_vless-DE-16"
+      - "🇩🇪@hamedp71_vless-DE-17"
+      - "🇩🇪@hamedp71_vless-DE-18"
+      - "🇩🇪@hamedp71_vless-DE-19"
+      - "🇺🇸@hamedp71_vless-US-15"
+      - "🇺🇸@hamedp71_vless-US-16"
+      - "🇳🇱@hamedp71_ss-NL-1"
+      - "🇺🇸@hamedp71_vless-US-17"
+      - "🇺🇸@hamedp71_vless-US-18"
+      - "🇺🇸@hamedp71_vless-US-19"
+      - "🇺🇸@hamedp71_vless-US-20"
+      - "🇯🇵@hamedp71_vless-JP-7"
+      - "🇮🇩@hamedp71_vless-ID-1"
+      - "🇯🇵@hamedp71_vless-JP-8"
+      - "🇳🇱@hamedp71_ss-NL-2"
+      - "🇫🇮@hamedp71_vless-FI-1"
+      - "🇺🇸@hamedp71_vless-US-21"
+      - "🇮🇳@hamedp71_ss-IN-1"
+      - "🇩🇪@hamedp71_ss-DE-3"
+      - "🇳🇱@hamedp71_ss-NL-3"
+      - "🇩🇪@hamedp71_ss-DE-4"
+      - "🇫🇷@hamedp71_ss-FR-2"
+      - "🇹🇷@hamedp71_ss-TR-2"
+      - "🇺🇸@hamedp71_vless-US-22"
+      - "🇫🇷@hamedp71_vless-FR-1"
+      - "🇫🇮@hamedp71_ss-FI-1"
+      - "🇺🇸@hamedp71_vless-US-23"
+      - "🇮🇳@hamedp71_ss-IN-2"
+      - "🇺🇸@hamedp71_vless-US-24"
+      - "🇸🇬@hamedp71_ss-SG-1"
+      - "🇺🇸@hamedp71_vless-US-25"
+      - "🇳🇱@hamedp71_ss-NL-4"
+      - "🇺🇸@hamedp71_vless-US-26"
+      - "🇺🇸@hamedp71_vless-US-27"
+      - "🇺🇸@hamedp71_vless-US-28"
+      - "🇮🇳@hamedp71_ss-IN-3"
+      - "🇺🇸@hamedp71_vless-US-29"
+      - "🇬🇧@hamedp71_ss-GB-1"
+      - "🇪🇸@hamedp71_ss-ES-1"
+      - "🇸🇬@hamedp71_vless-SG-2"
+      - "🇸🇬@hamedp71_vless-SG-3"
+      - "🇸🇬@hamedp71_vless-SG-4"
+      - "🇸🇬@hamedp71_vless-SG-5"
+      - "🇸🇬@hamedp71_vless-SG-6"
+      - "🇸🇬@hamedp71_vless-SG-7"
+      - "🇳🇱@hamedp71_ss-NL-5"
+      - "🇳🇱@hamedp71_ss-NL-6"
+      - "🇳🇱@hamedp71_ss-NL-7"
+      - "🇺🇸@hamedp71_ss-US-4"
 
-  - name: "🔁 سیستم فیلبک"
-    type: fallback
-    url: "http://www.gstatic.com/generate_204"
-    interval: 300
+  - name: "🤍 وارپ"
+    type: url-test
+    url: "http://cp.cloudflare.com"
+    interval: 60
+    tolerance: 100
     proxies:
-      - "🇹🇷 hamedp71 - WireGuard"
-      - "🇦🇪 hamedp71 - WireGuard"
+      - "🇹🇷 hamedp71 - Warp"
+      - "🇦🇹 Austria-WG"
+      - "🇦🇹 Austria-WG-1"
+      - "🇦🇺 Australia-WG-1"
+      - "🇦🇺 Australia-WG-2"
+      - "🇦🇺 Australia-WG-3"
+      - "🇦🇺 Australia-WG-4"
+      - "🇦🇺 Australia-WG-5"
+      - "🇦🇺 Australia-WG"
+      - "🇦🇺 Australia-WG-6"
+      - "🇧🇦 Bosnia-WG"
+      - "🇨🇦 Canada-WG"
+      - "🇨🇦 Canada-WG-1"
+      - "🇨🇦 Canada-WG-3"
+      - "🇨🇦 Canada-WG-3"
+      - "🇨🇦 Canada-WG-4"
+      - "🇨🇭 Switzerland-WG-1"
+      - "🇨🇭 Switzerland-WG-2"
+      - "🇨🇾 Cyprus-WG"
+      - "🇨🇿 Czechia-WG"
+      - "🇨🇿 Czechia-WG-1"
+      - "🇫🇷 France-WG"
+      - "🇫🇷 France-WG-1"
+      - "🇫🇷 France-WG-2"
+      - "🇬🇧 United Kingdom-WG"
+      - "🇭🇰 Hong Kong-WG"
+      - "🇮🇸 Iceland-WG"
+      - "🇮🇸 Iceland-WG-1"
+      - "🇮🇸 Iceland-WG-2"
+      - "🇮🇹 Italy-WG"
+      - "🇯🇵 Japan-WG"
+      - "🇰🇪 Kenya-WG"
+      - "🇱🇹 Lithuania-WG"
+      - "🇱🇹 Lithuania-WG-1"
+      - "🇱🇺 Luxembourg-WG"
+      - "🇲🇰 North Macedonia-WG"
+      - "🇳🇱 Netherlands-WG-1"
+      - "🇳🇱 Netherlands-WG-2"
+      - "🇳🇱 Netherlands-WG-3"
+      - "🇳🇴 Norway-WG"
+      - "🇳🇿 New Zealand-WG"
+      - "🇵🇦 Panama-WG"
+      - "🇵🇱 Poland-WG"
+      - "🇷🇺 Russia-WG"
+      - "🇷🇺 Russia-WG-1"
+      - "🇷🇺 Russia-WG-2"
+      - "🇷🇺 Russia-WG-3"
+      - "🇸🇪 Sweden-WG"
+      - "🇸🇪 Sweden-WG-1"
+      - "🇸🇪 Sweden-WG-2"
+      - "🇺🇦 Ukraine"
+      - "🇹🇼 Taiwan"
+      - "🇸🇬 Singapore"
+      - "🇸🇬 Singapore 1"
+      - "🇸🇬 Singapore 2"
+      - "🇺🇸 United States 2"
+      - "🇺🇸 United States 3"
+      - "🇺🇸 United States 4"
+      - "🇺🇸 United States 5"
+      - "🇺🇸 United States 6"
+      - "🇺🇸 United States 7"
+      - "🇺🇸 United States 8"
+      - "🇺🇸 United States 9"
+      - "🇺🇸 United States 10"
+      - "🇺🇸 United States 11"
+      - "🇺🇸 United States"
+      - "🇻🇳 Vietnam"
+      - "🇿🇦 South Africa 1"
+      - "🇿🇦 South Africa"
+
+  - name: "⚡انتخاب خودکار"
+    type: url-test
+    url: "https://www.gstatic.com/generate_204"
+    interval: 120
+    tolerance: 50
+    proxies:
+      - "🇩🇪 ShadowTLS-Proxy"
+      - "🇩🇪 anytls-443"
+      - "🇸🇪 hamedp71 hy2"
+      - "🇳🇱 hamedp71 hy2"
       - "🇺🇸 US-hysteria"
       - "🇺🇸 1 US-hysteria"
       - "🇳🇱 NL-hysteria"
-      - "🇩🇪 anytls-443"
+      - "🇬🇧 hamedp71-1-V"
+      - "🇬🇧 hamedp71-2-V"
+      - "🇪🇸 hamedp71-3-V"
+      - "🇫🇷 hamedp71-4-V"
+      - "🇫🇷 hamedp71-5-V"
+      - "🇳🇱 hamedp71-6-V"
+      - "🇨🇦 hamedp71-7-V"
+      - "🇩🇪 hamedp71-8-V"
+      - "🇩🇪 hamedp71-9-V"
+      - "🇸🇬 hamedp71-10-V"
+      - "🇺🇸 hamedp71-11-V"
+      - "🇦🇺 hamedp71-12-V"
+      - "🇸🇪 hamedp71-1-V"
+      - "🇸🇪 hamedp71-2-V"
+      - "🇸🇪 hamedp71-3-V"
+      - "🇸🇪 hamedp71-4-V"
+      - "🇸🇪 hamedp71-5-V"
+      - "🇸🇪 hamedp71-6-V"
+      - "🇸🇪 hamedp71-7-V"
+      - "🇸🇪 hamedp71-8-V"
+      - "🇸🇪 hamedp71-9-V"
+      - "🇸🇪 hamedp71-10-V"
+      - "🇸🇪 hamedp71-11-V"
+      - "🇸🇪 hamedp71-12-V"
+      - "🇸🇪 hamedp71-13-V"
+      - "🇸🇪 hamedp71-14-V"      
+      - "🇩🇪-Direct-VLESS"
+      - "🇩🇪-AD-CDN-VLESS"
+      - "🇩🇪-Telegram-VLESS"
       - "🇳🇱 1 hamedp71 - Vless"
       - "🇳🇱 2 hamedp71 - Vless"
       - "🇳🇱 3 hamedp71 - Vless"
@@ -1363,38 +5628,7 @@ proxy-groups:
       - "🇳🇱 25 hamedp71 - Vless"
       - "🇳🇱 26 hamedp71 - Vless"
       - "🇳🇱 27 hamedp71 - Vless"
-      - "🇩🇪-Direct-VLESS"
-      - "🇩🇪-AD-CDN-VLESS"
-      - "🇩🇪-Telegram-VLESS"
-      - "🇸🇪 hamedp71-1-V"
-      - "🇸🇪 hamedp71-2-V"
-      - "🇸🇪 hamedp71-3-V"
-      - "🇸🇪 hamedp71-4-V"
-      - "🇸🇪 hamedp71-5-V"
-      - "🇸🇪 hamedp71-6-V"
-      - "🇸🇪 hamedp71-7-V"
-      - "🇸🇪 hamedp71-8-V"
-      - "🇸🇪 hamedp71-9-V"
-      - "🇸🇪 hamedp71-10-V"
-      - "🇸🇪 hamedp71-11-V"
-      - "🇸🇪 hamedp71-12-V"
-      - "🇸🇪 hamedp71-13-V"
-      - "🇸🇪 hamedp71-14-V"
-      - "🇸🇪 hamedp71 hy2"
-      - "🇳🇱 hamedp71 hy2"
-      - "🇬🇧 hamedp71-1-V"
-      - "🇬🇧 hamedp71-2-V"
-      - "🇪🇸 hamedp71-3-V"
-      - "🇫🇷 hamedp71-4-V"
-      - "🇫🇷 hamedp71-5-V"
-      - "🇳🇱 hamedp71-6-V"
-      - "🇨🇦 hamedp71-7-V"
-      - "🇩🇪 hamedp71-8-V"
-      - "🇩🇪 hamedp71-9-V"
-      - "🇸🇬 hamedp71-10-V"
-      - "🇺🇸 hamedp71-11-V"
-      - "🇦🇺 hamedp71-12-V"
-
+      
 rule-providers:
   malware:
     type: http
@@ -1538,7 +5772,6 @@ rule-providers:
     interval: 86400   
 
 rules:
-  - NETWORK,udp,REJECT
   - RULE-SET,malware,REJECT
   - RULE-SET,phishing,REJECT
   - RULE-SET,cryptominers,REJECT
@@ -1546,6 +5779,7 @@ rules:
   - RULE-SET,malware-cidr,REJECT
   - RULE-SET,phishing-cidr,REJECT
   - RULE-SET,ir,DIRECT
+  - RULE-SET,ir-cidr,DIRECT
   - RULE-SET,openai,DIRECT
   - RULE-SET,microsoft,DIRECT
   - RULE-SET,oracle,DIRECT
@@ -1558,8 +5792,7 @@ rules:
   - RULE-SET,asus,DIRECT
   - RULE-SET,hp,DIRECT
   - RULE-SET,lenovo,DIRECT
-  - RULE-SET,ir-cidr,DIRECT
-  - MATCH,✅ گلوبال
+  - MATCH,💚 گلوبال
 
 ntp:
   enable: true
